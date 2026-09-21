@@ -241,7 +241,7 @@ a { color: var(--cinta-fosc); text-underline-offset: .18em; text-decoration-thic
 .albara-llista svg { width: 1.4rem; height: 1.4rem; margin-top: .15rem; color: var(--retolador); }
 .albara-llista strong { display: block; font-family: var(--f-titol); font-stretch: 105%; }
 .albara-llista span { color: var(--gris); font-size: .95rem; }
-.albara-no { margin-top: 1.5rem; padding: 1rem 1.2rem; background: var(--blanc); border-left: 4px solid var(--cartro); font-size: .95rem; }
+.albara-no { margin-top: 1.5rem; padding: 1rem 1.2rem; background: var(--blanc); border: 1.5px dashed var(--cartro); border-radius: 2px; font-size: .95rem; }
 .albara-signa { display: flex; justify-content: flex-end; margin-top: 2rem; }
 .albara-signa span { min-width: 14rem; border-top: 1.5px solid var(--retolador); padding-top: .4rem; font-size: var(--t-s); color: var(--gris); }
 @media (max-width: 700px) { .albara-llista { grid-template-columns: 1fr; } }

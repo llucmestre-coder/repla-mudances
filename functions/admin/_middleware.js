@@ -9,7 +9,7 @@ function igual(a, b) {
 }
 
 export async function onRequest({ request, env, next }) {
-  const denega = () => new Response('Acceso restringido', {
+  const denega = () => new Response('Accés restringit', {
     status: 401,
     headers: { 'WWW-Authenticate': 'Basic realm="Repla admin", charset="UTF-8"', 'Cache-Control': 'no-store' },
   });
