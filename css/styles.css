@@ -526,3 +526,17 @@ a { color: var(--cinta-fosc); text-underline-offset: .18em; text-decoration-thic
   .nav-obre { width: 2.4rem; padding-inline: .4rem; }
 }
 .calc { overflow-x: clip; }
+@media (max-width: 360px) {
+  .marca { font-size: 1rem; }
+  .marca svg { width: 1.2rem; height: 1.2rem; }
+  .cap .btn { font-size: .75rem; padding-inline: .45rem; }
+  .tria-idioma-boto { padding-inline: .3rem; }
+}
+@media (max-width: 420px) {
+  .cap-in { gap: .3rem; }
+  .tria-idioma-punta { display: none; }
+}
+@media (max-width: 340px) {
+  .marca { font-size: .95rem; gap: .25rem; }
+  .cap .wrap { width: calc(100% - 1rem); }
+}
