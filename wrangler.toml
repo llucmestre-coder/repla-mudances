@@ -1,0 +1,16 @@
+# Cloudflare Pages (connectat a GitHub). Web estàtica a l'arrel + Functions a /functions.
+# Secrets (NO aquí: el repo és públic) — `wrangler pages secret put <NOM> --project-name repla-mudances`:
+#   TURNSTILE_SECRET, BREVO_API_KEY, BREVO_SENDER, WHATSAPP, ADMIN_PASSWORD
+name = "repla-mudances"
+pages_build_output_dir = "."
+compatibility_date = "2026-09-01"
+
+[[kv_namespaces]]
+binding = "CODIS"
+id = "faf81ab099ef4dd4be8df811f1744597"
+
+# Contactes de la calculadora (seguiment). Esquema: schema.sql. Llista privada a /admin.
+[[d1_databases]]
+binding = "LEADS"
+database_name = "repla-leads"
+database_id = "d7aa5e55-8b2c-45d7-8c0b-42373944dda8"

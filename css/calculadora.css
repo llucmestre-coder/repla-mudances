@@ -1,0 +1,192 @@
+/* =========================================================================
+   REPLÀ — calculadora de mudança
+   Una pregunta per pantalla, opcions grans i tàctils. Al costat, la
+   furgoneta que s'omple amb les respostes. Tokens de styles.css.
+   ========================================================================= */
+
+.calc { min-height: calc(100svh - var(--cap-h)); padding-block: clamp(1.5rem, 1rem + 3vw, 3.5rem) 4rem; background: var(--blanc); }
+/* El JS amaga passos amb l'atribut hidden; sense aquesta regla el display:grid
+   de .calc-ops el guanya. */
+.calc [hidden] { display: none !important; }
+.calc-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 26rem); gap: clamp(2rem, 1rem + 4vw, 5rem); align-items: start; }
+
+/* Capçalera: enrere · progrés · comptador */
+.calc-cap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; min-height: 2.75rem; }
+.calc-enrere {
+  display: inline-flex; align-items: center; gap: .3rem; padding: .5rem .6rem .5rem .2rem;
+  background: none; border: 0; cursor: pointer; font: 700 1rem/1 var(--f-titol); color: var(--retolador);
+}
+.calc-enrere svg { width: 1.2rem; height: 1.2rem; }
+.calc-enrere:hover { color: var(--cinta-fosc); }
+.calc-enrere[hidden] { display: inline-flex !important; visibility: hidden; }
+.calc-progres { position: relative; height: 8px; border-radius: 4px; background: var(--cartro-clar); overflow: hidden; }
+.calc-progres i {
+  position: absolute; inset: 0; background: var(--cartro);
+  transform-origin: left; transform: scaleX(0); transition: transform .45s cubic-bezier(.2,.7,.2,1);
+}
+.calc-comptador { font: 700 var(--t-s)/1 var(--f-titol); color: var(--gris); font-variant-numeric: tabular-nums; min-width: 2.5rem; text-align: right; }
+
+/* Respostes ja donades: xips que tornen enrere */
+.calc-resum { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1rem 0 0; min-height: 2rem; }
+.calc-resum button {
+  font: 600 var(--t-s)/1 var(--f-titol); padding: .45rem .75rem; border-radius: 999px;
+  background: var(--cartro-clar); border: 1.5px solid transparent; color: var(--retolador); cursor: pointer;
+}
+.calc-resum button:hover { border-color: var(--retolador); }
+
+/* Pas */
+.calc-pas { margin-top: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+.calc-pas h1, .calc-pas h2 { font-size: var(--t-xl); max-width: 22ch; outline: none; }
+.calc-intro { font: 700 1.05rem/1.3 var(--f-titol); color: var(--cinta-fosc); margin-bottom: .75rem; outline: none; }
+.calc-ajuda { margin-top: .75rem; color: var(--gris); max-width: 40rem; }
+
+.entra { animation: calc-entra .38s cubic-bezier(.2,.7,.2,1); }
+.entra-enrere { animation: calc-entra-enrere .38s cubic-bezier(.2,.7,.2,1); }
+@keyframes calc-entra { from { opacity: 0; transform: translateX(32px); } }
+@keyframes calc-entra-enrere { from { opacity: 0; transform: translateX(-32px); } }
+
+/* Opcions */
+.calc-ops { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: .9rem; margin-top: 1.75rem; }
+.calc-op {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: .35rem;
+  min-height: 4.25rem; padding: 1.1rem 3rem 1.1rem 1.2rem; text-align: left; cursor: pointer;
+  background: #FFFFFF; color: var(--retolador); border: 2px solid var(--linia); border-radius: var(--radi);
+  font: inherit; transition: border-color .15s, background-color .15s;
+}
+.calc-op:hover { border-color: var(--retolador); }
+.calc-op-nom { font: 700 1.15rem/1.2 var(--f-titol); font-stretch: 105%; }
+.calc-op-desc { font-size: .95rem; line-height: 1.45; color: var(--gris); }
+.calc-op[aria-pressed="true"] { border-color: var(--retolador); background: var(--cartro-clar); }
+.calc-op::after {
+  content: ""; position: absolute; top: .9rem; right: .9rem; width: 1.3rem; height: 1.3rem; border-radius: 3px;
+  border: 2px solid var(--linia); background: #FFFFFF;
+}
+.calc-op[aria-pressed="true"]::after {
+  border-color: var(--retolador);
+  background: var(--cinta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%231D2026' stroke-width='3.2'/%3E%3C/svg%3E") center / .95rem no-repeat;
+}
+.calc-ops-foto .calc-op { padding: 0 0 1.1rem; overflow: hidden; justify-content: flex-start; }
+.calc-ops-foto .calc-op img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; margin-bottom: .6rem; }
+.calc-ops-foto .calc-op-nom, .calc-ops-foto .calc-op-desc { padding-inline: 1.1rem; }
+.calc-ops-foto .calc-op::after { top: .75rem; right: .75rem; }
+
+/* Correu i codi */
+.calc-form { margin-top: 2rem; max-width: 36rem; }
+.calc-form label { display: block; font: 700 1rem/1.3 var(--f-titol); margin-bottom: .45rem; }
+.calc-fila { display: flex; flex-wrap: wrap; gap: .6rem; }
+.calc-fila input {
+  flex: 1 1 16rem; min-height: 3.25rem; padding: .75rem .9rem; font: inherit; font-size: 1.1rem;
+  border: 1.5px solid #8E8B84; border-radius: var(--radi); background: #FFFFFF; color: var(--retolador);
+}
+.calc-fila input:focus-visible { outline-offset: 0; border-color: var(--retolador); }
+.calc-fila input[aria-invalid="true"] { border-color: var(--error); }
+.calc-fila .btn { min-height: 3.25rem; flex: 0 0 auto; }
+.calc-captcha { margin-top: .9rem; }
+.calc-error { margin-top: .75rem; color: var(--error); font-weight: 700; min-height: 1.5em; }
+.calc-legal { font-size: var(--t-s); color: var(--gris); }
+
+.calc-codi { display: flex; gap: .5rem; border: 0; margin: 0; padding: 0; }
+.calc-codi input {
+  width: 3.25rem; height: 4rem; text-align: center; font: 800 1.75rem/1 var(--f-titol);
+  border: 1.5px solid #8E8B84; border-radius: var(--radi); background: #FFFFFF; color: var(--retolador);
+  font-variant-numeric: tabular-nums;
+}
+.calc-codi input:focus-visible { outline-offset: 0; border-color: var(--retolador); }
+@media (max-width: 400px) { .calc-codi { gap: .35rem; } .calc-codi input { width: 2.7rem; height: 3.5rem; font-size: 1.5rem; } }
+
+.calc-accions { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.25rem; }
+.calc-enllac {
+  background: none; border: 0; padding: .4rem 0; cursor: pointer;
+  font: 700 1rem/1.3 var(--f-titol); color: var(--cinta-fosc); text-decoration: underline; text-decoration-thickness: 1.5px;
+}
+.calc-enllac:disabled { color: var(--gris); cursor: default; text-decoration: none; }
+
+/* Resultat */
+.calc-preu {
+  font: 800 clamp(2.4rem, 1.2rem + 5vw, 4.2rem)/1 var(--f-titol); font-stretch: 112%; letter-spacing: -.02em;
+  color: var(--retolador); font-variant-numeric: tabular-nums;
+}
+.calc-resultat-resum { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1.5rem 0 2rem; }
+.calc-resultat-resum li { font: 600 var(--t-s)/1 var(--f-titol); padding: .5rem .75rem; border-radius: 999px; background: var(--cartro-clar); }
+.calc-wa { background: var(--whatsapp); color: #FFFFFF; min-height: 3.75rem; padding-inline: 1.6rem; font-size: 1.1rem; }
+.calc-wa:hover { background: #17733E; }
+.calc-wa svg { width: 1.5rem; height: 1.5rem; }
+
+/* Slider de quilòmetres */
+.calc-slider { margin-top: 2rem; max-width: 36rem; }
+.calc-m2 {
+  display: block; font: 800 clamp(3rem, 2rem + 5vw, 4.8rem)/1 var(--f-titol); font-stretch: 112%;
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--retolador);
+}
+.calc-slider input[type="range"] {
+  --pct: 12%;
+  -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 2.75rem;
+  margin-top: 1.25rem; background: transparent; cursor: pointer;
+}
+.calc-slider input[type="range"]:focus-visible { outline: none; }
+.calc-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px; border-radius: 4px;
+  background: linear-gradient(to right, var(--cartro) var(--pct), var(--cartro-clar) var(--pct));
+}
+.calc-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 2.2rem; height: 2.2rem; margin-top: -13px; border-radius: 6px;
+  background: var(--cinta); border: 3px solid var(--retolador);
+}
+.calc-slider input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--cinta-fosc); }
+.calc-slider input[type="range"]::-moz-range-track { height: 8px; border-radius: 4px; background: var(--cartro-clar); }
+.calc-slider input[type="range"]::-moz-range-progress { height: 8px; border-radius: 4px; background: var(--cartro); }
+.calc-slider input[type="range"]::-moz-range-thumb { width: 2.2rem; height: 2.2rem; border-radius: 6px; background: var(--cinta); border: 3px solid var(--retolador); }
+.calc-slider input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--cinta-fosc); }
+.calc-slider-escala { display: flex; justify-content: space-between; margin-top: .2rem; font: 600 var(--t-s)/1 var(--f-titol); color: var(--gris); }
+.calc-slider .btn { margin-top: 1.75rem; min-height: 3.25rem; padding-inline: 2rem; }
+
+/* ── La furgoneta ───────────────────────────────────────────────────── */
+.calc-furgo { position: sticky; top: calc(var(--cap-h) + 2rem); background: var(--cartro-clar); border-radius: var(--radi); padding: 1.5rem 1.25rem 1.25rem; }
+.furgo { width: 100%; overflow: visible; }
+.furgo-caixa { fill: #FFFFFF; stroke: var(--manta); stroke-width: 4; }
+.furgo-cabina { fill: var(--manta); }
+.furgo-vidre { fill: #C9D3E3; }
+.furgo-placa { fill: var(--blanc); }
+.furgo-km { font: 800 17px var(--f-titol); fill: var(--retolador); }
+.furgo-terra { stroke: var(--linia); stroke-width: 2; }
+.furgo-roda { fill: var(--retolador); }
+.furgo-llanta { fill: var(--linia); }
+.caixa { fill: var(--cartro); stroke: #8E6634; stroke-width: 1.5; }
+.caixa-cinta { stroke: #D9B98C; stroke-width: 6; }
+.caixa-nom { font: 700 11px var(--f-cos); fill: var(--retolador); }
+.caixa-nom-llarg { font-size: 8.5px; }
+.caixa-cau { animation: caixa-cau .42s cubic-bezier(.3,1.4,.5,1) both; }
+@keyframes caixa-cau { from { transform: translateY(-60px); opacity: 0; } 60% { opacity: 1; } }
+.furgo-peu { margin-top: .9rem; font: 700 .95rem/1.35 var(--f-titol); text-align: center; }
+
+.peu-mini { padding-block: 1.25rem; }
+.peu-mini .peu-baix { margin-top: 0; padding-top: 0; border-top: 0; }
+
+@media (max-width: 900px) {
+  .calc-in { grid-template-columns: 1fr; gap: 1.25rem; }
+  .calc-furgo { position: static; order: -1; display: grid; grid-template-columns: 9rem 1fr; gap: .9rem; align-items: center; padding: .7rem .9rem; }
+  .furgo-peu { margin: 0; text-align: left; font-size: .9rem; }
+}
+
+/* Mòbil: totes les opcions han de cabre sense fer scroll. */
+@media (max-width: 560px) {
+  .calc { padding-block: 1rem 3rem; }
+  .calc-pas { margin-top: 1.1rem; }
+  .calc-pas h1, .calc-pas h2 { font-size: clamp(1.6rem, 1.2rem + 3vw, 2rem); }
+  .calc-intro { font-size: .95rem; margin-bottom: .5rem; }
+  .calc-resum { margin-top: .6rem; min-height: 0; }
+  .calc-ops { grid-template-columns: 1fr; gap: .6rem; margin-top: 1.1rem; }
+  .calc-op { min-height: 3.6rem; padding: .85rem 3rem .85rem 1rem; }
+  .calc-op-nom { font-size: 1.05rem; }
+  .calc-ops-foto .calc-op {
+    display: grid; grid-template-columns: 5rem minmax(0, 1fr); grid-template-rows: auto auto;
+    column-gap: .9rem; align-items: center; align-content: center; padding: .5rem 3rem .5rem .5rem;
+  }
+  .calc-ops-foto .calc-op img { grid-row: 1 / span 2; width: 5rem; height: 5rem; aspect-ratio: 1; margin: 0; border-radius: 4px; }
+  .calc-ops-foto .calc-op-nom, .calc-ops-foto .calc-op-desc { padding-inline: 0; }
+  .calc-ops-foto .calc-op-desc { font-size: .88rem; }
+  .calc-ops-foto .calc-op-nom:last-child { grid-row: 1 / span 2; }
+  .calc-ops-foto .calc-op::after, .calc-op::after { top: 50%; right: .9rem; margin-top: -.65rem; }
+  .calc-fila .btn { width: 100%; }
+  .calc-furgo { grid-template-columns: 7rem 1fr; }
+}
